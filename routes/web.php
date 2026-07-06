@@ -18,6 +18,15 @@ Route::get('/generer-pdf', [PDFController::class, 'generer'])->name('pdf.generer
 
 // --- ROUTES ADMIN (PROTÉGÉES) ---
 Route::middleware(['auth'])->prefix('admin')->group(function () {
+
+
+    // Route pour afficher le formulaire d'importation
+Route::get('/import/excel', function() {
+    return view('admin.import');
+})->name('import.excel');
+
+// Route pour traiter le fichier Excel envoyé
+Route::post('/import/excel', [App\Http\Controllers\ImportController::class, 'store'])->name('import.excel.store');
     
     // Dashboard
       Route::get('/dashboard', function() { return view('admin.dashboard'); })->name('admin.dashboard');
