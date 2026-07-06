@@ -16,6 +16,6 @@ class ImportController extends Controller
 
         Excel::import(new EmploiImport, $request->file('file'));
 
-        return redirect()->back()->with('success', 'Données importées avec succès !');
+        return redirect()->route('admin.dashboard')->with('success', 'Données importées avec succès !');
     }
 }
