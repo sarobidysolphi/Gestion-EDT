@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+img {
+    filter: brightness(0.9) saturate(1.2);
+}
+.theme-dark-blue {
+    background-color: #1a2332;
+    color: #ffffff;
+}
+.theme-dark-blue .card {
+    background-color: #2a3a52;
+    color: #ffffff;
+}
