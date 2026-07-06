@@ -76,10 +76,10 @@
             </a>
 
             <!-- Générer PDF -->
-            <a href="#" style="flex: 1; min-width: 150px; background: rgba(255,255,255,0.1); color: white; padding: 20px; border-radius: 15px; text-align: center; text-decoration: none; transition: 0.3s;">
-                <i class="fas fa-file-pdf" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
-                <span>Exporter en PDF</span>
-            </a>
+            <a href="{{ route('pdf.generer') }}" style="flex: 1; min-width: 150px; background: rgba(255,255,255,0.1); color: white; padding: 20px; border-radius: 15px; text-align: center; text-decoration: none; transition: 0.3s;">
+    <i class="fas fa-file-pdf" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+    <span>Exporter en PDF</span>
+</a>
         </div>
     </div>
 
