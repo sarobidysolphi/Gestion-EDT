@@ -25,6 +25,10 @@ class ClasseController extends Controller
             'niveau' => $request->niveau,
         ]);
         return redirect()->route('classes.index');
+
+
+         Classe::create(['niveau' => $request->niveau]);
+    return redirect()->route('classes.index')->with('success', '✅ Classe ajoutée avec succès !');
     }
 
     public function edit($idclasse)
