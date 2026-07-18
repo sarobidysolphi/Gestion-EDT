@@ -19,13 +19,20 @@ class ClasseController extends Controller
         return view('admin.classes.create');
     }
 
-    public function store(Request $request)
+
+
+   // Exemple dans store()
+public function store(Request $request)
 {
     Classe::create(['niveau' => $request->niveau]);
-
-    // On redirige avec un paramètre GET au lieu d'une session
-    return redirect()->route('classes.index')->with('success', '✅ Classe ajoutée avec succès !');
+    
+    // On stocke le message dans la session Laravel
+    session()->flash('success', '✅ Classe ajoutée avec succès !');
+    
+    return redirect()->route('classes.index');
 }
+
+
     public function edit($idclasse)
     {
         $classe = Classe::findOrFail($idclasse);

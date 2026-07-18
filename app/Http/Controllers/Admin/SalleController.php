@@ -28,7 +28,10 @@ class SalleController extends Controller
     {
         Salle::create(['design' => $request->design]);
         return redirect()->route('salles.index');
-    }
+        
+        session()->flash('success', '✅ Salle ajoutée avec succès !');
+    
+        }
 
     public function edit($idsalle)
     {

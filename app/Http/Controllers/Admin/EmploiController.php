@@ -53,8 +53,8 @@ class EmploiController extends Controller
             'idsalle' => $request->idsalle,
         ]);
 
-      
-        return redirect()->route('emplois.index')->with('success', 'Emploi du temps ajouté avec succès !');
+        session()->flash('success', '✅ Emplois du temps ajouté avec succès !');
+        return redirect()->route('emplois.index');
        
     }
 

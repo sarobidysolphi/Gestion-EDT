@@ -37,20 +37,16 @@ class ProfesseurController extends Controller
      */
     public function store(Request $request)
 {
-    // Validation (si tu veux que ce soit obligatoire, décommente la ligne 'required')
-    // $request->validate([
-    //     'Nom' => 'required',
-    //     'Prenoms' => 'required',
-    //     'Grade' => 'required',
-    // ]);
+    
 
     Professeur::create([
         'Nom' => $request->Nom,
         'Prenoms' => $request->Prenoms, // Si c'est vide, ça va mettre null (ce qui est autorisé maintenant)
         'Grade' => $request->Grade,
     ]);
-
-    return redirect()->route('professeurs.index')->with('success', 'Professeur ajouté avec succès !');
+     
+    session()->flash('success', '✅ Professeur ajouté avec succès !');
+    return redirect()->route('professeurs.index');
 }
     /**
      * Display the specified resource.

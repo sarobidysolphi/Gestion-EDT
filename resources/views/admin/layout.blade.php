@@ -154,30 +154,7 @@
         .btn-back { display: block; text-align: center; margin-top: 15px; color: rgba(255,255,255,0.6); text-decoration: none; }
         .btn-back:hover { color: #fff; }
     
-              /* Boîte de notification personnalisée */
-.notification-box {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    border-radius: 15px;
-    color: #fff;
-    font-weight: bold;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    z-index: 9999;
-    transform: translateX(150%);
-    transition: transform 0.5s ease;
-}
-.notification-box.show {
-    transform: translateX(0);
-}
-.notification-box.success {
-    background: #32CD32; /* Vert */
-}
-.notification-box.error {
-    background: #ff6b6b; /* Rouge */
-}
-    
+ 
     </style>
 </head>
 <body>
@@ -269,84 +246,44 @@
         }
     </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-    // 1. Configurer Toastr
-    toastr.options = {
-        "closeButton": true,
-        "progressBar": true,
-        "positionClass": "toast-top-right",
-        "timeOut": 3000,
-        "extendedTimeOut": 1000,
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
+    // Fonction pour vérifier les messages toutes les 1 seconde
+    function checkForMessages() {
+        fetch('/admin/check-message')
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    // Créer une boîte de notification HTML dynamique
+                    const box = document.createElement('div');
+                    box.style.cssText = `
+                        position: fixed; top: 20px; right: 20px;
+                        padding: 15px 25px; border-radius: 15px;
+                        color: white; font-weight: bold;
+                        background: ${data.type === 'success' ? '#32CD32' : '#ff6b6b'};
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                        z-index: 9999;
+                        transition: opacity 0.5s ease;
+                        opacity: 0;
+                    `;
+                    box.textContent = data.message;
+                    document.body.appendChild(box);
 
-    // 2. Lire le message directement depuis l'URL (paramètre GET)
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const successMsg = urlParams.get('success');
-        const errorMsg = urlParams.get('error');
+                    // Faire apparaître
+                    setTimeout(() => { box.style.opacity = '1'; }, 100);
 
-        if (successMsg) {
-            toastr.success(decodeURIComponent(successMsg));
-        }
-        if (errorMsg) {
-            toastr.error(decodeURIComponent(errorMsg));
-        }
-    });
-</script>
-
-<script>
-    // Fonction pour afficher la notification
-    function showNotification(message, type = 'success') {
-        const box = document.getElementById('customNotification');
-        const msg = document.getElementById('notificationMessage');
-        
-        // Configurer la couleur
-        box.className = 'notification-box ' + type;
-        msg.textContent = message;
-        
-        // Afficher
-        box.style.display = 'block';
-        setTimeout(() => {
-            box.classList.add('show');
-        }, 10);
-        
-        // Disparaître après 3 secondes
-        setTimeout(() => {
-            box.classList.remove('show');
-            setTimeout(() => {
-                box.style.display = 'none';
-            }, 500);
-        }, 3000);
+                    // Faire disparaître après 3 secondes
+                    setTimeout(() => {
+                        box.style.opacity = '0';
+                        setTimeout(() => { box.remove(); }, 500);
+                    }, 3000);
+                }
+            });
     }
 
-    // Lire les messages depuis l'URL (paramètres GET)
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const successMsg = urlParams.get('success');
-        const errorMsg = urlParams.get('error');
-
-        if (successMsg) {
-            showNotification(decodeURIComponent(successMsg), 'success');
-        }
-        if (errorMsg) {
-            showNotification(decodeURIComponent(errorMsg), 'error');
-        }
-    });
+    // Vérifier toutes les secondes (tant que la page est ouverte)
+    setInterval(checkForMessages, 1000);
 </script>
-
-<!-- Boîte de notification -->
-<div id="customNotification" class="notification-box success" style="display: none;">
-    <span id="notificationMessage">Message</span>
-</div>
-
-
-
 
 </body>
 </html>
