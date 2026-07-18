@@ -300,6 +300,10 @@
     });
 </script>
 
+<!-- Boîte de notification -->
+<div id="customNotification" class="notification-box success" style="display: none;">
+    <span id="notificationMessage">Message</span>
+</div>
 
 </body>
 </html>
