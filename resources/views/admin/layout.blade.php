@@ -300,10 +300,53 @@
     });
 </script>
 
+<script>
+    // Fonction pour afficher la notification
+    function showNotification(message, type = 'success') {
+        const box = document.getElementById('customNotification');
+        const msg = document.getElementById('notificationMessage');
+        
+        // Configurer la couleur
+        box.className = 'notification-box ' + type;
+        msg.textContent = message;
+        
+        // Afficher
+        box.style.display = 'block';
+        setTimeout(() => {
+            box.classList.add('show');
+        }, 10);
+        
+        // Disparaître après 3 secondes
+        setTimeout(() => {
+            box.classList.remove('show');
+            setTimeout(() => {
+                box.style.display = 'none';
+            }, 500);
+        }, 3000);
+    }
+
+    // Lire les messages depuis l'URL (paramètres GET)
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMsg = urlParams.get('success');
+        const errorMsg = urlParams.get('error');
+
+        if (successMsg) {
+            showNotification(decodeURIComponent(successMsg), 'success');
+        }
+        if (errorMsg) {
+            showNotification(decodeURIComponent(errorMsg), 'error');
+        }
+    });
+</script>
+
 <!-- Boîte de notification -->
 <div id="customNotification" class="notification-box success" style="display: none;">
     <span id="notificationMessage">Message</span>
 </div>
+
+
+
 
 </body>
 </html>
