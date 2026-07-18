@@ -53,7 +53,9 @@ class EmploiController extends Controller
             'idsalle' => $request->idsalle,
         ]);
 
+      
         return redirect()->route('emplois.index')->with('success', 'Emploi du temps ajouté avec succès !');
+       
     }
 
     public function edit($id)

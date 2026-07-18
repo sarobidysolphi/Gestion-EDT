@@ -16,6 +16,7 @@
         toastr.error("{{ session('error') }}");
     </script>
 @endif
+
     <title>Plateforme de gestion d'emploi du temps</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -152,6 +153,31 @@
         .btn-submit:hover { background: rgba(50, 205, 50, 0.4); }
         .btn-back { display: block; text-align: center; margin-top: 15px; color: rgba(255,255,255,0.6); text-decoration: none; }
         .btn-back:hover { color: #fff; }
+    
+              /* Boîte de notification personnalisée */
+.notification-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 15px;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 9999;
+    transform: translateX(150%);
+    transition: transform 0.5s ease;
+}
+.notification-box.show {
+    transform: translateX(0);
+}
+.notification-box.success {
+    background: #32CD32; /* Vert */
+}
+.notification-box.error {
+    background: #ff6b6b; /* Rouge */
+}
+    
     </style>
 </head>
 <body>
@@ -243,23 +269,37 @@
         }
     </script>
 
-    <!-- Toastr JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-    // Configuration de Toastr (Design moderne, transparent, comme le thème du site)
+    // 1. Configurer Toastr
     toastr.options = {
         "closeButton": true,
         "progressBar": true,
         "positionClass": "toast-top-right",
-        "timeOut": 3000, // Disparaît après 3 secondes
+        "timeOut": 3000,
         "extendedTimeOut": 1000,
         "showEasing": "swing",
         "hideEasing": "linear",
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     };
+
+    // 2. Lire le message directement depuis l'URL (paramètre GET)
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMsg = urlParams.get('success');
+        const errorMsg = urlParams.get('error');
+
+        if (successMsg) {
+            toastr.success(decodeURIComponent(successMsg));
+        }
+        if (errorMsg) {
+            toastr.error(decodeURIComponent(errorMsg));
+        }
+    });
 </script>
+
 
 </body>
 </html>

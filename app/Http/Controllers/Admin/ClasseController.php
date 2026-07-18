@@ -20,17 +20,12 @@ class ClasseController extends Controller
     }
 
     public function store(Request $request)
-    {
-        Classe::create([
-            'niveau' => $request->niveau,
-        ]);
-        return redirect()->route('classes.index');
+{
+    Classe::create(['niveau' => $request->niveau]);
 
-
-         Classe::create(['niveau' => $request->niveau]);
+    // On redirige avec un paramètre GET au lieu d'une session
     return redirect()->route('classes.index')->with('success', '✅ Classe ajoutée avec succès !');
-    }
-
+}
     public function edit($idclasse)
     {
         $classe = Classe::findOrFail($idclasse);
