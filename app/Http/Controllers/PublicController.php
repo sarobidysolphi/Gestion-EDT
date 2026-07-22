@@ -13,22 +13,14 @@ class PublicController extends Controller
     $classes = Classe::all();
     $emplois = Emploi::with(['professeur', 'salle', 'classe']);
 
-    // 1. Filtrage par Semestre
-    if ($request->filled('semestre')) {
-        $emplois->where('semestre', $request->semestre);
-    }
-
-    // 2. Filtrage par Niveau
-    if ($request->filled('niveau')) {
-        $emplois->whereHas('classe', function($q) use ($request) {
-            $q->where('niveau', $request->niveau);
-        });
-    }
-
-    $emplois = $emplois->get();
-
-    if ($request->ajax()) {
-        return view('partials.emplois_table', compact('emplois'))->render();
+      if ($request->filled('semestre') && $request->filled('niveau')) {
+        $emplois->where('semestre', $request->semestre)
+                ->whereHas('classe', function($q) use ($request) {
+                    $q->where('niveau', $request->niveau);
+                });
+    } else {
+        // Si un seul est présent, on renvoie une collection vide
+        $emplois = Emploi::whereRaw('1 = 0'); // Aucun résultat
     }
 
     return view('accueil', compact('emplois', 'classes'));
