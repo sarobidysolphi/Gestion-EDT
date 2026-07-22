@@ -233,32 +233,34 @@
         }
     </script>
 
-    <!-- Script pour l'affichage des messages Toastr (déclenché au chargement) -->
     <script>
-        // Configuration de Toastr
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "timeOut": 3000,
-            "extendedTimeOut": 1000,
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
+    // Configuration de Toastr
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": 3000,
+        "extendedTimeOut": 1000,
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
 
-        // Lire les messages de la session au chargement de la page
-        document.addEventListener('DOMContentLoaded', function() {
-            @if(session('success'))
-                toastr.success("{{ session('success') }}");
-            @endif
+    // Lire les messages depuis l'URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMsg = urlParams.get('success');
+        const errorMsg = urlParams.get('error');
 
-            @if(session('error'))
-                toastr.error("{{ session('error') }}");
-            @endif
-        });
-    </script>
+        if (successMsg) {
+            toastr.success(decodeURIComponent(successMsg));
+        }
+        if (errorMsg) {
+            toastr.error(decodeURIComponent(errorMsg));
+        }
+    });
+</script>
 
 </body>
 </html>
