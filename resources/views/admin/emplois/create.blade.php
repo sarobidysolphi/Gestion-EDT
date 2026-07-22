@@ -28,14 +28,6 @@
             </div>
 
             <div class="form-group">
-                <label>Jour Semaine</label>
-                <select name="jour_semaine" required>
-                    <option value="Lundi">Lundi</option>
-                    <option value="Mardi">Mardi</option>
-                    <option value="Mercredi">Mercredi</option>
-                    <option value="Jeudi">Jeudi</option>
-                    <option value="Vendredi">Vendredi</option>
-                </select>
             </div>
 
             <div class="form-group">
