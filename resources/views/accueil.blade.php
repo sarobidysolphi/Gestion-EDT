@@ -40,13 +40,22 @@
         .hero-text p { color: rgba(255, 255, 255, 0.7); font-size: 1.2rem; margin-bottom: 30px; }
         .hero-image img { max-width: 100%; height: auto; border-radius: 20px; }
         .glass-card {
-            max-width: 1200px; margin: 0 auto 50px auto; padding: 20px;
+            max-width: 1200px; margin: 0 auto 20px auto; padding: 20px;
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 25px;
         }
-        .filter-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 20px; }
+        .filter-row { 
+            display: flex; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+            align-items: flex-end; 
+            margin-bottom: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
         .filter-group { flex: 1; min-width: 150px; }
         .filter-group label { display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: 8px; font-size: 0.9rem; }
         .filter-group select {
@@ -83,32 +92,16 @@
             <img src="{{ asset('illustration.png') }}" alt="Illustration" style="max-height: 300px; opacity: 0.8;">
         </div>
     </div>
-      
-     @if(isset($debutSemaine) && isset($finSemaine))
-    <div style="color: #32CD32; font-weight: bold; text-align: center; margin-bottom: 15px;">
-        Semaine du {{ $debutSemaine->format('d/m/Y') }} au {{ $finSemaine->format('d/m/Y') }}
-    </div>
-@endif
 
-
-    <div class="glass-card">
-        <h2 style="color: #32CD32; margin-bottom: 20px; text-align: center;">Consulter les emplois du temps</h2>
+    <!-- SECTION FILTRES (Maintenant à l'extérieur du glass-card) -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <h2 style="color: #32CD32; margin-bottom: 15px; text-align: center;">Consulter les emplois du temps</h2>
 
         <div class="filter-row">
             <div class="filter-group">
                 <label>Semestre</label>
                 <select id="semestreSelect" class="form-select">
                     <option value="">Tous</option>
-                    <option value="">Semestre 1</option>
-                    <option value="">Semestre 2</option>
-                    <option value="">Semestre 3</option>
-                    <option value="">Semestre 4</option>
-                    <option value="">Semestre 5</option>
-                    <option value="">Semestre 6</option>
-                    <option value="">Semestre 7</option>
-                    <option value="">Semestre 8</option>
-                    <option value="">Semestre 9</option>
-                    <option value="">Semestre 10</option>
                     @foreach($classes as $classe)
                         @if($classe->semestre)
                             <option value="{{ $classe->semestre }}">{{ $classe->semestre }}</option>
@@ -117,7 +110,6 @@
                 </select>
             </div>
 
-            
             <div class="filter-group">
                 <label>Niveau</label>
                 <select id="niveauSelect" class="form-select">
@@ -128,8 +120,19 @@
                 </select>
             </div>
         </div>
+    </div>
+
+    <!-- INDICATEUR DE SEMAINE (Affiché au-dessus du tableau) -->
+    @if(isset($debutSemaine) && isset($finSemaine))
+        <div style="color: #32CD32; font-weight: bold; text-align: center; margin-bottom: 10px; margin-top: 10px;">
+            Semaine du {{ $debutSemaine->format('d/m/Y') }} au {{ $finSemaine->format('d/m/Y') }}
+        </div>
+    @endif
+
+    <!-- TABLEAU (Dans la glass-card) -->
+    <div class="glass-card">
         <div id="emploisContainer" class="table-responsive">
-            <p class="empty-msg">Veuillez sélectionner un niveau pour voir l'emploi du temps.</p>
+            <p class="empty-msg">Veuillez sélectionner un Semestre et un Niveau pour voir l'emploi du temps.</p>
         </div>
     </div>
 
@@ -144,13 +147,12 @@
             const container = document.getElementById('emploisContainer');
 
             function loadEmplois() {
-                // Si aucun niveau n'est sélectionné, on demande à l'utilisateur de choisir
-                if(niveau.value === '') {
-                    container.innerHTML = '<p class="empty-msg">Veuillez sélectionner un niveau pour voir l\'emploi du temps.</p>';
+                // Exiger les DEUX filtres pour afficher un résultat
+                if(semestre.value === '' || niveau.value === '') {
+                    container.innerHTML = '<p class="empty-msg">Veuillez sélectionner un Semestre et un Niveau.</p>';
                     return;
                 }
 
-                // Construire l'URL de la requête avec le semestre et le niveau
                 const url = `/?semestre=${semestre.value}&niveau=${niveau.value}`;
                 
                 fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
@@ -160,6 +162,11 @@
 
             semestre.addEventListener('change', loadEmplois);
             niveau.addEventListener('change', loadEmplois);
+
+            // Charger par défaut si les deux sont déjà sélectionnés (au cas où)
+            if(semestre.value !== '' && niveau.value !== '') {
+                loadEmplois();
+            }
         });
     </script>
 </body>
