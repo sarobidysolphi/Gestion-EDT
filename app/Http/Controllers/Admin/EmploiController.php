@@ -57,10 +57,12 @@ class EmploiController extends Controller
             'idsalle' => $request->idsalle,
         ]);
 
-        // Redirection avec message
-        return redirect()->route('emplois.index')->with('success', '✅ Emploi du temps ajouté avec succès !');
-    }
+   return redirect()->route('emplois.index')->with('success', '✅ Emploi du temps ajouté avec succès !');
+   
+   }
 
+
+    
     public function edit($id)
     {
         $emploi = Emploi::findOrFail($id);
