@@ -83,6 +83,13 @@
             <img src="{{ asset('illustration.png') }}" alt="Illustration" style="max-height: 300px; opacity: 0.8;">
         </div>
     </div>
+      
+     @if(isset($debutSemaine) && isset($finSemaine))
+    <div style="color: #32CD32; font-weight: bold; text-align: center; margin-bottom: 15px;">
+        Semaine du {{ $debutSemaine->format('d/m/Y') }} au {{ $finSemaine->format('d/m/Y') }}
+    </div>
+@endif
+
 
     <div class="glass-card">
         <h2 style="color: #32CD32; margin-bottom: 20px; text-align: center;">Consulter les emplois du temps</h2>
