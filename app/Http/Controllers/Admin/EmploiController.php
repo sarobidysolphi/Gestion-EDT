@@ -26,40 +26,41 @@ class EmploiController extends Controller
     }
 
     public function store(Request $request)
-{
-    // 1. Validation des champs (obligatoire pour éviter les erreurs)
-    $request->validate([
-        'cours' => 'required',
-        'date' => 'required|date',
-        'heure_debut' => 'required',
-        'heure_fin' => 'required',
-        'semaine' => 'required|integer',
-        'semestre' => 'required',
-        'idprof' => 'required|exists:professeurs,idprof',
-        'idclasse' => 'required|exists:classes,idclasse',
-        'idsalle' => 'required|exists:salles,idsalle',
-    ]);
+    {
+        // Validation des champs
+        $request->validate([
+            'cours' => 'required',
+            'date' => 'required|date',
+            'heure_debut' => 'required',
+            'heure_fin' => 'required',
+            'semaine' => 'required|integer',
+            'semestre' => 'required',
+            'idprof' => 'required|exists:professeurs,idprof',
+            'idclasse' => 'required|exists:classes,idclasse',
+            'idsalle' => 'required|exists:salles,idsalle',
+        ]);
 
-    // 2. Calcul automatique du jour de la semaine à partir de la date
-    $jourSemaine = \Carbon\Carbon::parse($request->date)->locale('fr')->isoFormat('dddd');
+        // Calcul automatique du jour de la semaine
+        $jourSemaine = \Carbon\Carbon::parse($request->date)->locale('fr')->isoFormat('dddd');
 
-    // 3. Enregistrement dans la base de données
-    Emploi::create([
-        'cours' => $request->cours,
-        'date' => $request->date,
-        'heure_debut' => $request->heure_debut,
-        'heure_fin' => $request->heure_fin,
-        'jour_semaine' => $jourSemaine,
-        'semaine' => $request->semaine,
-        'semestre' => $request->semestre,
-        'idprof' => $request->idprof,
-        'idclasse' => $request->idclasse,
-        'idsalle' => $request->idsalle,
-    ]);
+        // Enregistrement
+        Emploi::create([
+            'cours' => $request->cours,
+            'date' => $request->date,
+            'heure_debut' => $request->heure_debut,
+            'heure_fin' => $request->heure_fin,
+            'jour_semaine' => $jourSemaine,
+            'semaine' => $request->semaine,
+            'semestre' => $request->semestre,
+            'idprof' => $request->idprof,
+            'idclasse' => $request->idclasse,
+            'idsalle' => $request->idsalle,
+        ]);
 
-    // 4. Redirection avec message de succès
-    return redirect()->route('emplois.index')->with('success', '✅ Emploi du temps ajouté avec succès !');
-}
+        // Redirection avec message
+        return redirect()->route('emplois.index')->with('success', '✅ Emploi du temps ajouté avec succès !');
+    }
+
     public function edit($id)
     {
         $emploi = Emploi::findOrFail($id);
@@ -71,26 +72,42 @@ class EmploiController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Validation
+        $request->validate([
+            'cours' => 'required',
+            'date' => 'required|date',
+            'heure_debut' => 'required',
+            'heure_fin' => 'required',
+            'semaine' => 'required|integer',
+            'semestre' => 'required',
+            'idprof' => 'required|exists:professeurs,idprof',
+            'idclasse' => 'required|exists:classes,idclasse',
+            'idsalle' => 'required|exists:salles,idsalle',
+        ]);
+
+        // Calcul automatique du jour de la semaine (comme dans store)
+        $jourSemaine = \Carbon\Carbon::parse($request->date)->locale('fr')->isoFormat('dddd');
+
         $emploi = Emploi::findOrFail($id);
         $emploi->update([
             'cours' => $request->cours,
             'date' => $request->date,
             'heure_debut' => $request->heure_debut,
             'heure_fin' => $request->heure_fin,
-            'jour_semaine' => $request->jour_semaine,
-            'semaine' => $request->semaine ?? 0,
-            'semestre' => $request->semestre ?? 'Semestre 1',
+            'jour_semaine' => $jourSemaine,
+            'semaine' => $request->semaine,
+            'semestre' => $request->semestre,
             'idprof' => $request->idprof,
             'idclasse' => $request->idclasse,
             'idsalle' => $request->idsalle,
         ]);
 
-        return redirect()->route('emplois.index')->with('success', 'Emploi du temps modifié avec succès !');
+        return redirect()->route('emplois.index')->with('success', '✅ Emploi du temps modifié avec succès !');
     }
 
     public function destroy($id)
     {
         Emploi::findOrFail($id)->delete();
-        return redirect()->route('emplois.index')->with('success', 'Emploi du temps supprimé avec succès !');
+        return redirect()->route('emplois.index')->with('success', '✅ Emploi du temps supprimé avec succès !');
     }
 }
