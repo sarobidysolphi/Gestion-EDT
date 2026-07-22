@@ -188,7 +188,43 @@
             </div>
 
         </div>
+         
 
+
+        <!-- Affichage des messages de succès et d'erreur en HTML -->
+@if(session('success'))
+    <div style="
+        background: rgba(50, 205, 50, 0.15);
+        border: 1px solid rgba(50, 205, 50, 0.3);
+        border-radius: 15px;
+        padding: 15px 20px;
+        color: #32CD32;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    ">
+        <i class="fas fa-check-circle" style="font-size: 1.2rem;"></i>
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div style="
+        background: rgba(255, 0, 0, 0.15);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        border-radius: 15px;
+        padding: 15px 20px;
+        color: #ff6b6b;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    ">
+        <i class="fas fa-exclamation-circle" style="font-size: 1.2rem;"></i>
+        {{ session('error') }}
+    </div>
+@endif
         <!-- MAIN CONTENT -->
         <div class="main-content">
             @yield('content')
@@ -233,34 +269,7 @@
         }
     </script>
 
-    <script>
-    // Configuration de Toastr
-    toastr.options = {
-        "closeButton": true,
-        "progressBar": true,
-        "positionClass": "toast-top-right",
-        "timeOut": 3000,
-        "extendedTimeOut": 1000,
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
-
-    // Lire les messages depuis l'URL
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const successMsg = urlParams.get('success');
-        const errorMsg = urlParams.get('error');
-
-        if (successMsg) {
-            toastr.success(decodeURIComponent(successMsg));
-        }
-        if (errorMsg) {
-            toastr.error(decodeURIComponent(errorMsg));
-        }
-    });
-</script>
+   
 
 </body>
 </html>
