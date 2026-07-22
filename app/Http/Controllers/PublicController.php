@@ -32,5 +32,18 @@ class PublicController extends Controller
     }
 
     return view('accueil', compact('emplois', 'classes'));
+    
+     // Récupère la première date trouvée ou utilise la date d'aujourd'hui
+    $premierEmploi = $emplois->orderBy('date')->first();
+    $dateReference = $premierEmploi ? $premierEmploi->date : now();
+
+    // Calcul du début et fin de semaine
+    $debutSemaine = \Carbon\Carbon::parse($dateReference)->startOfWeek(\Carbon\Carbon::MONDAY);
+    $finSemaine = (clone $debutSemaine)->endOfWeek(\Carbon\Carbon::SUNDAY);
+
+    $emplois = $emplois->get();
+
+    return view('accueil', compact('emplois', 'classes', 'debutSemaine', 'finSemaine'));
+
 }
 }

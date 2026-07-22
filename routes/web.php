@@ -148,11 +148,28 @@ Route::get('/admin/salles/libres', function(\Illuminate\Http\Request $request) {
         }
     }
 
-    return response()->json($sallesLibres);
-})->middleware('auth');
-
-
+    return response()->json($sallesLibres);})->middleware('auth');  
 });
+
+  
+Route::get('/admin/check-message', function() {
+    $message = session('success');
+    $type = 'success';
+
+    if (!$message) {
+        $message = session('error');
+        $type = 'error';
+    }
+
+    if ($message) {
+        // On vide le message après l'avoir lu
+        session()->forget('success');
+        session()->forget('error');
+        return response()->json(['message' => $message, 'type' => $type]);
+    }
+
+    return response()->json(['message' => null]);
+})->middleware('auth');
 
 
 
