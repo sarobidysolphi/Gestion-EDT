@@ -39,6 +39,8 @@ class EmploiController extends Controller
             'idsalle' => 'required|exists:salles,idsalle',
         ]);
 
+        $jourSemaine = \Carbon\Carbon::parse($request->date)->locale('fr')->isoFormat('dddd');
+
         // Création de l'emploi du temps
         Emploi::create([
             'cours' => $request->cours,
