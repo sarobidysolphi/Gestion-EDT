@@ -189,42 +189,6 @@
 
         </div>
          
-
-
-        <!-- Affichage des messages de succès et d'erreur en HTML -->
-@if(session('success'))
-    <div style="
-        background: rgba(50, 205, 50, 0.15);
-        border: 1px solid rgba(50, 205, 50, 0.3);
-        border-radius: 15px;
-        padding: 15px 20px;
-        color: #32CD32;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    ">
-        <i class="fas fa-check-circle" style="font-size: 1.2rem;"></i>
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div style="
-        background: rgba(255, 0, 0, 0.15);
-        border: 1px solid rgba(255, 0, 0, 0.3);
-        border-radius: 15px;
-        padding: 15px 20px;
-        color: #ff6b6b;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    ">
-        <i class="fas fa-exclamation-circle" style="font-size: 1.2rem;"></i>
-        {{ session('error') }}
-    </div>
-@endif
         <!-- MAIN CONTENT -->
         <div class="main-content">
             @yield('content')
@@ -270,6 +234,95 @@
     </script>
 
    
+<!-- Message Toast flottant -->
+@if(session('success'))
+    <div id="toast-success" style="
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        padding: 15px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        z-index: 9999;
+        border-left: 5px solid #32CD32;
+        animation: slideDown 0.5s ease forwards;
+        font-family: 'Segoe UI', sans-serif;
+    ">
+        <i class="fas fa-check-circle" style="color: #32CD32; font-size: 1.5rem;"></i>
+        <span>{{ session('success') }}</span>
+    </div>
+
+    <script>
+        // Disparaît après 3 secondes
+        setTimeout(function() {
+            const toast = document.getElementById('toast-success');
+            if (toast) {
+                toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(-20px)';
+                setTimeout(() => { toast.remove(); }, 500);
+            }
+        }, 3000);
+    </script>
+@endif
+
+@if(session('error'))
+    <div id="toast-error" style="
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        padding: 15px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        z-index: 9999;
+        border-left: 5px solid #ff6b6b;
+        animation: slideDown 0.5s ease forwards;
+        font-family: 'Segoe UI', sans-serif;
+    ">
+        <i class="fas fa-times-circle" style="color: #ff6b6b; font-size: 1.5rem;"></i>
+        <span>{{ session('error') }}</span>
+    </div>
+
+    <script>
+        setTimeout(function() {
+            const toast = document.getElementById('toast-error');
+            if (toast) {
+                toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(-20px)';
+                setTimeout(() => { toast.remove(); }, 500);
+            }
+        }, 3000);
+    </script>
+@endif
+
+<style>
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+</style>
+
 
 </body>
 </html>

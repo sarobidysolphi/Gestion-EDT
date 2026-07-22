@@ -32,34 +32,34 @@ class ProfesseurController extends Controller
         return view('admin.professeurs.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+   public function store(Request $request)
 {
-    
-
     Professeur::create([
         'Nom' => $request->Nom,
-        'Prenoms' => $request->Prenoms, // Si c'est vide, ça va mettre null (ce qui est autorisé maintenant)
+        'Prenoms' => $request->Prenoms,
         'Grade' => $request->Grade,
     ]);
-     
-    session()->flash('success', '✅ Professeur ajouté avec succès !');
-    return redirect()->route('professeurs.index');
+    return redirect()->route('professeurs.index')->with('success', '✅ Professeur ajouté avec succès !');
 }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($idprof)
+public function update(Request $request, $idprof)
+{
+    $prof = Professeur::findOrFail($idprof);
+    $prof->update([
+        'Nom' => $request->Nom,
+        'Prenoms' => $request->Prenoms,
+        'Grade' => $request->Grade,
+    ]);
+    return redirect()->route('professeurs.index')->with('success', '✅ Professeur modifié avec succès !');
+}
+
+public function destroy($idprof)
+{
+    Professeur::findOrFail($idprof)->delete();
+    return redirect()->route('professeurs.index')->with('success', '✅ Professeur supprimé avec succès !');
+}
+
+       public function edit($idprof)
 {
     // On récupère le professeur grâce à son ID
     $professeur = Professeur::findOrFail($idprof);
@@ -67,30 +67,4 @@ class ProfesseurController extends Controller
     // On envoie la variable à la vue
     return view('admin.professeurs.edit', compact('professeur'));
 }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $idprof)
-    {
-        
-          $professeur = Professeur::findOrFail($idprof);
-    $professeur->update([
-        'Nom' => $request->Nom,
-        'Prenoms' => $request->Prenoms,
-        'Grade' => $request->Grade,
-    ]);
-
-    return redirect()->route('professeurs.index')->with('success', 'Professeur modifié avec succès !');
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($idprof)
-    {
-        Professeur::findOrFail($idprof)->delete();
-    return redirect()->route('professeurs.index')->with('success', 'Professeur supprimé avec succès !');
-    }
 }

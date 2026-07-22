@@ -21,15 +21,23 @@ class ClasseController extends Controller
 
 
 
-   // Exemple dans store()
 public function store(Request $request)
 {
     Classe::create(['niveau' => $request->niveau]);
-    
-    // On stocke le message dans la session Laravel
-    session()->flash('success', '✅ Classe ajoutée avec succès !');
-    
-    return redirect()->route('classes.index');
+    return redirect()->route('classes.index')->with('success', '✅ Classe ajoutée avec succès !');
+}
+
+public function update(Request $request, $idclasse)
+{
+    $classe = Classe::findOrFail($idclasse);
+    $classe->update(['niveau' => $request->niveau]);
+    return redirect()->route('classes.index')->with('success', '✅ Classe modifiée avec succès !');
+}
+
+public function destroy($idclasse)
+{
+    Classe::findOrFail($idclasse)->delete();
+    return redirect()->route('classes.index')->with('success', '✅ Classe supprimée avec succès !');
 }
 
 
@@ -37,21 +45,5 @@ public function store(Request $request)
     {
         $classe = Classe::findOrFail($idclasse);
         return view('admin.classes.edit', compact('classe'));
-    }
-
-    public function update(Request $request, $idclasse)
-    {
-        $classe = Classe::findOrFail($idclasse);
-        $classe->update([
-            'niveau' => $request->niveau,
-        ]);
-        return redirect()->route('classes.index');
-    }
-
-    public function destroy($idclasse)
-    {
-        $classe = Classe::findOrFail($idclasse);
-        $classe->delete();
-        return redirect()->route('classes.index');
     }
 }

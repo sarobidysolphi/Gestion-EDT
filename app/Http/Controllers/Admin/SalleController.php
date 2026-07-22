@@ -25,30 +25,32 @@ class SalleController extends Controller
     }
 
     public function store(Request $request)
-    {
-        Salle::create(['design' => $request->design]);
-        return redirect()->route('salles.index');
-        
-        session()->flash('success', '✅ Salle ajoutée avec succès !');
-    
-        }
+{
+    Salle::create([
+        'design' => $request->design,
+    ]);
+    return redirect()->route('salles.index')->with('success', '✅ Salle ajoutée avec succès !');
+}
 
+public function update(Request $request, $idsalle)
+{
+    $salle = Salle::findOrFail($idsalle);
+    $salle->update([
+        'design' => $request->design,
+    ]);
+    return redirect()->route('salles.index')->with('success', '✅ Salle modifiée avec succès !');
+}
+
+public function destroy($idsalle)
+{
+    Salle::findOrFail($idsalle)->delete();
+    return redirect()->route('salles.index')->with('success', '✅ Salle supprimée avec succès !');
+}
+
+    
     public function edit($idsalle)
     {
         $salle = Salle::findOrFail($idsalle);
         return view('admin.salles.edit', compact('salle'));
-    }
-
-    public function update(Request $request, $idsalle)
-    {
-        $salle = Salle::findOrFail($idsalle);
-        $salle->update(['design' => $request->design]);
-        return redirect()->route('salles.index');
-    }
-
-    public function destroy($idsalle)
-    {
-        Salle::findOrFail($idsalle)->delete();
-        return redirect()->route('salles.index');
     }
 }
