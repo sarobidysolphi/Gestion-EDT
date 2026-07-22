@@ -20,7 +20,7 @@ Route::get('/generer-pdf', [PDFController::class, 'generer'])->name('pdf.generer
 Route::middleware(['auth'])->prefix('admin')->group(function () {
 
 
-    // Route pour afficher le formulaire d'importation
+  // Route pour la page d'importation Excel (même si tu ne l'utilises pas tout de suite)
 Route::get('/import/excel', function() {
     return view('admin.import');
 })->name('import.excel');

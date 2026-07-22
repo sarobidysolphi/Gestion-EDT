@@ -3,24 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Affichage des messages Toastr -->
-@if(session('success'))
-    <script>
-        toastr.success("{{ session('success') }}");
-    </script>
-@endif
-
-@if(session('error'))
-    <script>
-        toastr.error("{{ session('error') }}");
-    </script>
-@endif
-
     <title>Plateforme de gestion d'emploi du temps</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -153,8 +142,6 @@
         .btn-submit:hover { background: rgba(50, 205, 50, 0.4); }
         .btn-back { display: block; text-align: center; margin-top: 15px; color: rgba(255,255,255,0.6); text-decoration: none; }
         .btn-back:hover { color: #fff; }
-    
- 
     </style>
 </head>
 <body>
@@ -246,44 +233,32 @@
         }
     </script>
 
+    <!-- Script pour l'affichage des messages Toastr (déclenché au chargement) -->
+    <script>
+        // Configuration de Toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": 3000,
+            "extendedTimeOut": 1000,
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
 
-<script>
-    // Fonction pour vérifier les messages toutes les 1 seconde
-    function checkForMessages() {
-        fetch('/admin/check-message')
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    // Créer une boîte de notification HTML dynamique
-                    const box = document.createElement('div');
-                    box.style.cssText = `
-                        position: fixed; top: 20px; right: 20px;
-                        padding: 15px 25px; border-radius: 15px;
-                        color: white; font-weight: bold;
-                        background: ${data.type === 'success' ? '#32CD32' : '#ff6b6b'};
-                        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                        z-index: 9999;
-                        transition: opacity 0.5s ease;
-                        opacity: 0;
-                    `;
-                    box.textContent = data.message;
-                    document.body.appendChild(box);
+        // Lire les messages de la session au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
 
-                    // Faire apparaître
-                    setTimeout(() => { box.style.opacity = '1'; }, 100);
-
-                    // Faire disparaître après 3 secondes
-                    setTimeout(() => {
-                        box.style.opacity = '0';
-                        setTimeout(() => { box.remove(); }, 500);
-                    }, 3000);
-                }
-            });
-    }
-
-    // Vérifier toutes les secondes (tant que la page est ouverte)
-    setInterval(checkForMessages, 1000);
-</script>
+            @if(session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
+    </script>
 
 </body>
 </html>
