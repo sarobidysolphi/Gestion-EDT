@@ -121,14 +121,6 @@
            </div>
         </div>
     </div>
-
-    <!-- INDICATEUR DE SEMAINE (Affiché au-dessus du tableau) -->
-    @if(isset($debutSemaine) && isset($finSemaine))
-        <div style="color: #32CD32; font-weight: bold; text-align: center; margin-bottom: 10px; margin-top: 10px;">
-            Semaine du {{ $debutSemaine->format('d/m/Y') }} au {{ $finSemaine->format('d/m/Y') }}
-        </div>
-    @endif
-
     <!-- TABLEAU (Dans la glass-card) -->
     <div class="glass-card">
         <div id="emploisContainer" class="table-responsive">

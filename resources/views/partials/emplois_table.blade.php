@@ -69,4 +69,4 @@
             @endforeach
         </tbody>
     </table>
-@endifs
+@endif
