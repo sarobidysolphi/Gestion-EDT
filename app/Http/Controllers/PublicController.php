@@ -10,12 +10,12 @@ class PublicController extends Controller
 {
 public function index(Request $request)
 {
-    // 1. Récupérer toutes les classes pour remplir les listes déroulantes (Semestre, Niveau)
     $classes = Classe::all();
 
-    // 2. Filtrer les emplois du temps
+    // 1. On prépare la requête des emplois du temps
     $emplois = Emploi::with(['professeur', 'salle', 'classe']);
 
+    // 2. On applique les filtres (Semestre, Niveau)
     if ($request->filled('semestre') && $request->semestre !== 'Tous') {
         $emplois->where('semestre', $request->semestre);
     }
@@ -28,10 +28,15 @@ public function index(Request $request)
 
     $emplois = $emplois->get();
 
+    // 3. SI AUCUN EMPLOI N'EST TROUVÉ, ON AFFICHE LA GRILLE VIDE MAIS ON GARDE LA SEMAINE
+    $premiereDate = $emplois->first() ? $emplois->first()->date : now();
+    $debutSemaine = \Carbon\Carbon::parse($premiereDate)->startOfWeek(\Carbon\Carbon::MONDAY);
+    $finSemaine = (clone $debutSemaine)->endOfWeek(\Carbon\Carbon::SUNDAY);
+
     if ($request->ajax()) {
-        return view('partials.emplois_table', compact('emplois'))->render();
+        return view('partials.emplois_table', compact('emplois', 'debutSemaine', 'finSemaine'))->render();
     }
 
-    return view('accueil', compact('emplois', 'classes'));
+    return view('accueil', compact('emplois', 'classes', 'debutSemaine', 'finSemaine'));
 }
 }

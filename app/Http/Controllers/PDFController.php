@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Emploi;
 use Illuminate\Http\Request;
+use Dompdf\Dompdf;
 
 class PDFController extends Controller
 {
@@ -29,40 +30,62 @@ class PDFController extends Controller
         $debutSemaine = \Carbon\Carbon::parse($premiereDate)->startOfWeek(\Carbon\Carbon::MONDAY);
         $finSemaine = (clone $debutSemaine)->endOfWeek(\Carbon\Carbon::SUNDAY);
 
-        // 3. Création du PDF (CORRIGÉ : police courier + pas de subsetting)
-        $pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->setFontSubsetting(false);
-        $pdf->AddPage();
-        
-        // Utilisation d'une police qui marche sur Windows
-        $pdf->SetFont('courier', '', 10);
+        // 3. Création du HTML du PDF
+        $html = '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body { font-family: Arial, sans-serif; font-size: 12px; }
+                h1 { text-align: center; }
+                .semaine { text-align: center; font-weight: bold; margin-bottom: 20px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+                th { background-color: #f0f0f0; }
+            </style>
+        </head>
+        <body>
+            <h1>EMPLOI DU TEMPS</h1>
+            <div class="semaine">
+                Semaine du ' . $debutSemaine->format('d/m/Y') . ' au ' . $finSemaine->format('d/m/Y') . '
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jour</th>
+                        <th>Date</th>
+                        <th>Heure</th>
+                        <th>Cours</th>
+                        <th>Salle</th>
+                        <th>Niveau</th>
+                    </tr>
+                </thead>
+                <tbody>';
 
-        // Titre
-        $pdf->Cell(0, 10, 'EMPLOI DU TEMPS', 0, 1, 'C');
-        $pdf->Cell(0, 8, 'Semaine du ' . $debutSemaine->format('d/m/Y') . ' au ' . $finSemaine->format('d/m/Y'), 0, 1, 'C');
-        $pdf->Ln(5);
-
-        // En-têtes du tableau
-        $pdf->Cell(30, 10, 'Jour', 1);
-        $pdf->Cell(30, 10, 'Date', 1);
-        $pdf->Cell(40, 10, 'Heure', 1);
-        $pdf->Cell(50, 10, 'Cours', 1);
-        $pdf->Cell(30, 10, 'Salle', 1);
-        $pdf->Cell(30, 10, 'Niveau', 1);
-        $pdf->Ln();
-
-        // Contenu du tableau
         foreach ($emplois as $e) {
-            $pdf->Cell(30, 10, $e->jour_semaine, 1);
-            $pdf->Cell(30, 10, $e->date, 1);
-            $pdf->Cell(40, 10, $e->heure_debut . '-' . $e->heure_fin, 1);
-            $pdf->Cell(50, 10, $e->cours, 1);
-            $pdf->Cell(30, 10, $e->salle->design, 1);
-            $pdf->Cell(30, 10, $e->classe->niveau, 1);
-            $pdf->Ln();
+            $html .= '
+                    <tr>
+                        <td>' . $e->jour_semaine . '</td>
+                        <td>' . $e->date . '</td>
+                        <td>' . $e->heure_debut . '-' . $e->heure_fin . '</td>
+                        <td>' . $e->cours . '</td>
+                        <td>' . $e->salle->design . '</td>
+                        <td>' . $e->classe->niveau . '</td>
+                    </tr>';
         }
 
-        // 4. Télécharger le PDF
-        $pdf->Output('emploi_du_temps.pdf', 'D');
+        $html .= '
+                </tbody>
+            </table>
+        </body>
+        </html>';
+
+        // 4. Génération du PDF avec DomPDF
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        $dompdf->stream('emploi_du_temps.pdf', ['Attachment' => 1]);
     }
 }
