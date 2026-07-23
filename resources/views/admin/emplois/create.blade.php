@@ -65,10 +65,10 @@
             <div class="form-group">
                 <label>Classe</label>
                 <select name="idclasse" required>
-                  <option value="">Sélectionner</option>
-                   @foreach($classes as $classe)
-                 <option value="{{ $classe->idclasse }}">{{ $classe->niveau }}</option>
-                  @endforeach
+                <option value="">Sélectionner</option>
+                @foreach($classes as $classe)
+                <option value="{{ $classe->idclasse }}">{{ $classe->niveau }}</option>
+                 @endforeach
                 </select>
             </div>
 
