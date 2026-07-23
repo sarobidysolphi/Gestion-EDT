@@ -16,9 +16,9 @@ class PublicController extends Controller
     $emplois = Emploi::with(['professeur', 'salle', 'classe']);
 
     // Filtrer par Semestre (si la colonne existe)
-    if ($request->filled('semestre') && $request->semestre !== 'Tous') {
-        $emplois->where('semestre', $request->semestre);
-    }
+      if ($request->filled('semestre') && $request->semestre !== 'Tous') {
+      $emplois->where('semestre', $request->semestre);
+}
 
     // Filtrer par Niveau
     if ($request->filled('niveau') && $request->niveau !== 'Tous') {
