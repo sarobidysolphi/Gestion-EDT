@@ -1,14 +1,19 @@
-<!-- On a enlevé le message d'alerte. Si pas de cours, on n'affiche rien du tout. -->
-<!-- Le bouton PDF s'affiche uniquement si le tableau contient des cours -->
-@if(!$emplois->isEmpty())
-    <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('pdf.generer', ['niveau' => request('niveau'), 'mention' => request('mention')]) }}" 
-           class="btn btn-primary" style="background-color: #0d6efd; color: white; padding: 8px 20px; border-radius: 6px; text-decoration: none;">
-            <i class="fas fa-file-pdf"></i> Télécharger le PDF
-        </a>
+<!-- Affichage de la semaine (même si le tableau est vide) -->
+@if(isset($debutSemaine) && isset($finSemaine))
+    <div style="color: #32CD32; font-weight: bold; text-align: center; margin-bottom: 10px;">
+        Semaine du {{ $debutSemaine->format('d/m/Y') }} au {{ $finSemaine->format('d/m/Y') }}
     </div>
 @endif
 
+<!-- Bouton PDF (s'affiche toujours, même si le tableau est vide) -->
+<div class="d-flex justify-content-end mb-3">
+    <a href="{{ route('pdf.generer', ['semestre' => request('semestre'), 'niveau' => request('niveau')]) }}" 
+       class="btn btn-primary" style="background-color: #0d6efd; color: white; padding: 8px 20px; border-radius: 6px; text-decoration: none;">
+        <i class="fas fa-file-pdf"></i> Télécharger le PDF
+    </a>
+</div>
+
+<!-- Tableau (affiché seulement s'il y a des cours) -->
 @if(!$emplois->isEmpty())
     <table class="table table-bordered bg-white shadow-sm text-center w-100" style="border: 1px solid #dee2e6; width: 100%;">
         <thead style="background-color: #f8f9fa; border-bottom: 2px solid #333;">
@@ -64,4 +69,4 @@
             @endforeach
         </tbody>
     </table>
-@endif
+@endifs
