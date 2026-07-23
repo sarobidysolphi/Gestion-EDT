@@ -11,7 +11,7 @@ class Classe extends Model
 
     protected $table = 'classes'; // C'est cette ligne qui force le nom !
     protected $primaryKey = 'idclasse';
-    protected $fillable = ['niveau'];
+    protected $fillable = ['niveau', 'mention', 'semestre'];
 
    
     public function emplois()
