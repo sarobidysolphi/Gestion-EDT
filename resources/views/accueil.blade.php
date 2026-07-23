@@ -112,13 +112,13 @@
 
             <div class="filter-group">
                 <label>Niveau</label>
-                <select id="niveauSelect" class="form-select">
-                    <option value="">Tous</option>
-                    @foreach($classes as $classe)
-                        <option value="{{ $classe->niveau }}">{{ $classe->niveau }}</option>
-                    @endforeach
-                </select>
-            </div>
+                  <select id="niveauSelect" class="form-select">
+                 <option value="">Tous</option>
+                  @foreach($classes as $classe)
+                <option value="{{ $classe->niveau }}">{{ $classe->niveau }}</option>
+                  @endforeach
+                  </select>
+           </div>
         </div>
     </div>
 

@@ -25,41 +25,40 @@ class EmploiController extends Controller
         return view('admin.emplois.create', compact('professeurs', 'classes', 'salles'));
     }
 
-    public function store(Request $request)
-    {
-        // Validation des champs
-        $request->validate([
-            'cours' => 'required',
-            'date' => 'required|date',
-            'heure_debut' => 'required',
-            'heure_fin' => 'required',
-            'semaine' => 'required|integer',
-            'semestre' => 'required',
-            'idprof' => 'required|exists:professeurs,idprof',
-            'idclasse' => 'required|exists:classes,idclasse',
-            'idsalle' => 'required|exists:salles,idsalle',
-        ]);
+   public function store(Request $request)
+{
+    // Validation
+    $request->validate([
+        'cours' => 'required',
+        'date' => 'required|date',
+        'heure_debut' => 'required',
+        'heure_fin' => 'required',
+        'semaine' => 'required|integer',
+        'semestre' => 'required',
+        'idprof' => 'required|exists:professeurs,idprof',
+        'idclasse' => 'required|exists:classes,idclasse',
+        'idsalle' => 'required|exists:salles,idsalle',
+    ]);
 
-        // Calcul automatique du jour de la semaine
-        $jourSemaine = \Carbon\Carbon::parse($request->date)->locale('fr')->isoFormat('dddd');
+    // Calcul du jour de la semaine
+    $jourSemaine = \Carbon\Carbon::parse($request->date)->locale('fr')->isoFormat('dddd');
 
-        // Enregistrement
-        Emploi::create([
-            'cours' => $request->cours,
-            'date' => $request->date,
-            'heure_debut' => $request->heure_debut,
-            'heure_fin' => $request->heure_fin,
-            'jour_semaine' => $jourSemaine,
-            'semaine' => $request->semaine,
-            'semestre' => $request->semestre,
-            'idprof' => $request->idprof,
-            'idclasse' => $request->idclasse,
-            'idsalle' => $request->idsalle,
-        ]);
+    // Enregistrement
+    Emploi::create([
+        'cours' => $request->cours,
+        'date' => $request->date,
+        'heure_debut' => $request->heure_debut,
+        'heure_fin' => $request->heure_fin,
+        'jour_semaine' => $jourSemaine,
+        'semaine' => $request->semaine,
+        'semestre' => $request->semestre, // C'est cette ligne qui enregistre le semestre
+        'idprof' => $request->idprof,
+        'idclasse' => $request->idclasse,
+        'idsalle' => $request->idsalle,
+    ]);
 
-   return redirect()->route('emplois.index')->with('success', '✅ Emploi du temps ajouté avec succès !');
-   
-   }
+    return redirect()->route('emplois.index')->with('success', 'Emploi du temps ajouté avec succès !');
+}
 
 
     

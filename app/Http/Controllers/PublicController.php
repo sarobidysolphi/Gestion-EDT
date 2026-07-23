@@ -9,7 +9,9 @@ use App\Models\Emploi;
 class PublicController extends Controller
 {
  public function index(Request $request)
-{
+{    
+
+    $classes = Classe::all();
    $classes = Classe::select('semestre')->distinct()->get();
     $emplois = Emploi::with(['professeur', 'salle', 'classe']);
 
