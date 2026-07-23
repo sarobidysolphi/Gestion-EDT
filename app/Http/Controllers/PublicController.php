@@ -10,17 +10,26 @@ class PublicController extends Controller
 {
  public function index(Request $request)
 {
-    $classes = Classe::all();
+   $classes = Classe::all();
     $emplois = Emploi::with(['professeur', 'salle', 'classe']);
 
-      if ($request->filled('semestre') && $request->filled('niveau')) {
-        $emplois->where('semestre', $request->semestre)
-                ->whereHas('classe', function($q) use ($request) {
-                    $q->where('niveau', $request->niveau);
-                });
-    } else {
-        // Si un seul est présent, on renvoie une collection vide
-        $emplois = Emploi::whereRaw('1 = 0'); // Aucun résultat
+    // Filtrer par Semestre (si la colonne existe)
+    if ($request->filled('semestre') && $request->semestre !== 'Tous') {
+        $emplois->where('semestre', $request->semestre);
+    }
+
+    // Filtrer par Niveau
+    if ($request->filled('niveau') && $request->niveau !== 'Tous') {
+        $emplois->whereHas('classe', function($q) use ($request) {
+            $q->where('niveau', $request->niveau);
+        });
+    }
+
+    // Si au moins un filtre est actif, on exécute la requête
+    $emplois = $emplois->get();
+
+    if ($request->ajax()) {
+        return view('partials.emplois_table', compact('emplois'))->render();
     }
 
     return view('accueil', compact('emplois', 'classes'));
